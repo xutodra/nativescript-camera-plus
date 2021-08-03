@@ -1,3 +1,4 @@
+/// <reference path="./node_modules/@nativescript/types/index.d.ts" />
 import { Application, ImageAsset } from '@nativescript/core';
 import { CLog } from './camera-plus.common';
 
@@ -239,7 +240,7 @@ export function createImageConfirmationDialog(file, retakeText = 'Retake', saveT
   return new Promise((resolve, reject) => {
     try {
       const alert = new android.app.AlertDialog.Builder(
-        app.android.foregroundActivity
+        Application.android.foregroundActivity
       ) as android.app.AlertDialog.Builder;
       alert.setOnDismissListener(
         new android.content.DialogInterface.OnDismissListener({
@@ -249,7 +250,7 @@ export function createImageConfirmationDialog(file, retakeText = 'Retake', saveT
         })
       );
 
-      const layout = new android.widget.LinearLayout(app.android.context) as android.widget.LinearLayout;
+      const layout = new android.widget.LinearLayout(Application.android.context) as android.widget.LinearLayout;
       layout.setOrientation(1);
 
       // - Brad - working on OOM issue - use better Bitmap creation
@@ -265,9 +266,9 @@ export function createImageConfirmationDialog(file, retakeText = 'Retake', saveT
 
       picture = android.graphics.BitmapFactory.decodeFile(file, bitmapFactoryOpts);
 
-      const img = new android.widget.ImageView(app.android.context);
+      const img = new android.widget.ImageView(Application.android.context);
 
-      const scale = app.android.context.getResources().getDisplayMetrics().density;
+      const scale = Application.android.context.getResources().getDisplayMetrics().density;
       img.setPadding(0, 10 * scale, 0, 0);
 
       img.setImageBitmap(picture);
