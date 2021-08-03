@@ -3,8 +3,7 @@
  *
  * Version 1.1.0                                                   team@nStudio.io
  **********************************************************************************/
-
-import { ContentView } from 'tns-core-modules/ui/content-view';
+import { ContentView } from '@nativescript/core';
 import { CameraPlus as CameraPlusDefinition } from '.';
 
 export class CameraUtil {

@@ -4,11 +4,9 @@
  *
  * Version 1.1.0                                       			   team@nStudio.io
  **********************************************************************************/
-/// <reference path="./node_modules/tns-platform-declarations/android.d.ts" />
+/// <reference path="./node_modules/@nativescript/types/index.d.ts" />
 
-import * as application from 'tns-core-modules/application';
-import { ImageAsset } from 'tns-core-modules/image-asset';
-import { ImageSource } from 'tns-core-modules/image-source';
+import { Application, ImageAsset, ImageSource } from '@nativescript/core';
 
 interface ArrayBufferStatic extends ArrayBufferConstructor {
   from(buffer: java.nio.ByteBuffer): ArrayBuffer;
@@ -92,7 +90,7 @@ export class SelectedAsset extends ImageAsset {
   private static _calculateFileUri(uri: android.net.Uri) {
     const isKitKat = android.os.Build.VERSION.SDK_INT >= 19; // android.os.Build.VERSION_CODES.KITKAT
 
-    if (isKitKat && DocumentsContract().isDocumentUri(application.android.context, uri)) {
+    if (isKitKat && DocumentsContract().isDocumentUri(Application.android.context, uri)) {
       // externalStorageProvider
       if (SelectedAsset.isExternalStorageDocument(uri)) {
         const docId = DocumentsContract().getDocumentId(uri);
@@ -296,6 +294,6 @@ export class SelectedAsset extends ImageAsset {
   }
 
   private static getContentResolver(): android.content.ContentResolver {
-    return application.android.nativeApp.getContentResolver();
+    return Application.android.nativeApp.getContentResolver();
   }
 }

@@ -1,5 +1,4 @@
-import * as app from 'tns-core-modules/application';
-import { ImageAsset } from 'tns-core-modules/image-asset';
+import { Application, ImageAsset } from '@nativescript/core';
 import { CLog } from './camera-plus.common';
 
 /**
@@ -7,9 +6,9 @@ import { CLog } from './camera-plus.common';
  * @param iconName
  */
 export function getImageDrawable(iconName: string) {
-  const drawableId = app.android.context
+  const drawableId = Application.android.context
     .getResources()
-    .getIdentifier(iconName, 'drawable', app.android.context.getPackageName()) as number;
+    .getIdentifier(iconName, 'drawable', Application.android.context.getPackageName()) as number;
   return drawableId;
 }
 
@@ -17,7 +16,7 @@ export function getImageDrawable(iconName: string) {
  * Helper method to create android ImageButton
  */
 export function createImageButton(): android.widget.ImageButton {
-  const btn = new android.widget.ImageButton(app.android.context) as android.widget.ImageButton;
+  const btn = new android.widget.ImageButton(Application.android.context) as android.widget.ImageButton;
   btn.setPadding(24, 24, 24, 24);
   btn.setMaxHeight(48);
   btn.setMaxWidth(48);

@@ -3,13 +3,7 @@
  *
  * Version 1.1.0                                                    team@nStudio.io
  **********************************************************************************/
-
-import { Color } from 'tns-core-modules/color';
-import * as fs from 'tns-core-modules/file-system/file-system';
-import { ImageAsset } from 'tns-core-modules/image-asset';
-import * as platform from 'tns-core-modules/platform';
-import { View } from 'tns-core-modules/ui/core/view';
-import * as types from 'tns-core-modules/utils/types';
+ import { Color, knownFolders, path, File, ImageAsset, View, Device, Utils } from '@nativescript/core';
 import {
   CameraPlusBase,
   CameraTypes,
@@ -56,7 +50,7 @@ class QBImagePickerControllerDelegateImpl extends NSObject implements QBImagePic
     if (options) {
       this._width = options.width;
       this._height = options.height;
-      this._keepAspectRatio = types.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
+      this._keepAspectRatio = Utils.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
     } else {
       this._keepAspectRatio = true; // always default to true
     }
@@ -147,15 +141,15 @@ class QBImagePickerControllerDelegateImpl extends NSObject implements QBImagePic
           requestOptions,
           (videoAsset: AVAsset, audioMix, info) => {
             if (videoAsset.isKindOfClass(AVURLAsset.class())) {
-              const docsPath = fs.knownFolders.documents();
+              const docsPath = knownFolders.documents();
 
-              const pathParts = (<AVURLAsset>videoAsset).URL.toString().split(fs.path.separator);
+              const pathParts = (<AVURLAsset>videoAsset).URL.toString().split(path.separator);
               const filename = pathParts[pathParts.length - 1];
-              const localFilePath = fs.path.join(docsPath.path, 'camera-plus-videos', filename);
+              const localFilePath = path.join(docsPath.path, 'camera-plus-videos', filename);
 
               const targetURL = NSURL.fileURLWithPath(localFilePath);
 
-              if (fs.File.exists(localFilePath)) {
+              if (File.exists(localFilePath)) {
                 docsPath.getFile('camera-plus-videos/' + filename).remove();
               } else {
                 // make sure the folder exists, or else copyItemAtURLToURLError
@@ -422,7 +416,7 @@ export class MySwifty extends SwiftyCamViewController {
             saveToGallery: this._owner.get().saveToGallery
           };
         }
-        if (!options.disableHEVC && parseFloat(platform.device.sdkVersion) >= 11) {
+        if (!options.disableHEVC && parseFloat(Device.sdkVersion) >= 11) {
           this.videoCodecType = AVVideoCodecTypeHEVC;
         }
         switch (options ? options.quality : CameraVideoQuality.MAX_480P) {
@@ -650,7 +644,7 @@ export class MySwifty extends SwiftyCamViewController {
       if (options) {
         reqWidth = options.width || reqWidth;
         reqHeight = options.height || reqHeight;
-        keepAspectRatio = types.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
+        keepAspectRatio = Utils.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
       } else {
         options = {
           showImages: true,

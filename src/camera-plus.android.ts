@@ -3,15 +3,9 @@
  *
  * Version 1.1.0                                                    team@nStudio.io
  **********************************************************************************/
-/// <reference path="./node_modules/tns-platform-declarations/android.d.ts" />
-
+/// <reference path="./node_modules/@nativescript/types/index.d.ts" />
+import { Application, AndroidApplication, ImageAsset, Device, View, Utils } from '@nativescript/core';
 import * as permissions from 'nativescript-permissions';
-import * as app from 'tns-core-modules/application';
-import { ImageAsset } from 'tns-core-modules/image-asset';
-import { device } from 'tns-core-modules/platform';
-import { View } from 'tns-core-modules/ui/core/view/view';
-import * as types from 'tns-core-modules/utils/types';
-import * as utils from 'tns-core-modules/utils/utils';
 import {
   CameraPlusBase,
   CameraVideoQuality,
@@ -55,7 +49,7 @@ const READ_EXTERNAL_STORAGE = () => (android as any).Manifest.permission.READ_EX
 const WRITE_EXTERNAL_STORAGE = () => (android as any).Manifest.permission.WRITE_EXTERNAL_STORAGE;
 // Since these device.* properties resolve directly to the android.* namespace,
 // the snapshot will fail if they resolve during import, so must be done via a function
-const DEVICE_INFO_STRING = () => `device: ${device.manufacturer} ${device.model} on SDK: ${device.sdkVersion}`;
+const DEVICE_INFO_STRING = () => `device: ${Device.manufacturer} ${Device.model} on SDK: ${Device.sdkVersion}`;
 export class CameraPlus extends CameraPlusBase {
   // @GetSetProperty() public camera: android.hardware.Camera;
   // Snapshot-friendly, since the decorator will include the snapshot-unknown object "android"
@@ -261,7 +255,7 @@ export class CameraPlus extends CameraPlusBase {
    */
   public createNativeView() {
     // create the Android RelativeLayout
-    app.android.on('activityRequestPermissions', this._permissionListener);
+    Application.android.on('activityRequestPermissions', this._permissionListener);
     this._nativeView = new android.widget.RelativeLayout(this._context);
     this._camera = new io.github.triniwiz.fancycamera.FancyCamera(this._context);
     (this._camera as any).setLayoutParams(
@@ -326,7 +320,7 @@ export class CameraPlus extends CameraPlusBase {
         let shouldKeepAspectRatio;
         let shouldAutoSquareCrop = owner.autoSquareCrop;
 
-        const density = utils.layout.getDisplayDensity();
+        const density = Utils.layout.getDisplayDensity();
         if (options) {
           confirmPic = options.confirm ? true : false;
           confirmPicRetakeText = options.confirmRetakeText ? options.confirmRetakeText : owner.confirmRetakeText;
@@ -334,7 +328,7 @@ export class CameraPlus extends CameraPlusBase {
           saveToGallery = options.saveToGallery ? true : false;
           reqWidth = options.width ? options.width * density : 0;
           reqHeight = options.height ? options.height * density : reqWidth;
-          shouldKeepAspectRatio = types.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
+          shouldKeepAspectRatio = Utils.isNullOrUndefined(options.keepAspectRatio) ? true : options.keepAspectRatio;
           shouldAutoSquareCrop = !!options.autoSquareCrop;
         } else {
           // use xml property getters or their defaults
@@ -422,7 +416,7 @@ export class CameraPlus extends CameraPlusBase {
   disposeNativeView() {
     CLog('disposeNativeView.');
     this.off(View.layoutChangedEvent, this._onLayoutChangeListener);
-    app.android.off('activityRequestPermissions', this._permissionListener);
+    Application.android.off('activityRequestPermissions', this._permissionListener);
     this.releaseCamera();
     super.disposeNativeView();
   }
@@ -643,28 +637,28 @@ export class CameraPlus extends CameraPlusBase {
                   selectedImages.push(asset);
                 }
 
-                app.android.off(app.AndroidApplication.activityResultEvent, onImagePickerResult);
+                Application.android.off(AndroidApplication.activityResultEvent, onImagePickerResult);
                 resolve(selectedImages);
                 this.sendEvent(CameraPlus.imagesSelectedEvent, selectedImages);
                 return; // yay
               } catch (e) {
                 CLog(e);
-                app.android.off(app.AndroidApplication.activityResultEvent, onImagePickerResult);
+                Application.android.off(AndroidApplication.activityResultEvent, onImagePickerResult);
                 reject(e);
                 this.sendEvent(CameraPlus.errorEvent, e, 'Error with the image picker result.');
                 return;
               }
             } else {
-              app.android.off(app.AndroidApplication.activityResultEvent, onImagePickerResult);
+              Application.android.off(AndroidApplication.activityResultEvent, onImagePickerResult);
               reject(`Image picker activity result code ${args.resultCode}`);
               return;
             }
           };
 
           // set the onImagePickerResult for the intent
-          app.android.on(app.AndroidApplication.activityResultEvent, onImagePickerResult);
+          Application.android.on(AndroidApplication.activityResultEvent, onImagePickerResult);
           // start the intent
-          app.android.foregroundActivity.startActivityForResult(intent, RESULT_CODE_PICKER_IMAGES);
+          Application.android.foregroundActivity.startActivityForResult(intent, RESULT_CODE_PICKER_IMAGES);
         };
 
         // Ensure storage permissions
@@ -817,7 +811,7 @@ export class CameraPlus extends CameraPlusBase {
    */
   public isCameraAvailable() {
     if (
-      utils.ad
+      Utils.ad
         .getApplicationContext()
         .getPackageManager()
         .hasSystemFeature('android.hardware.camera')
