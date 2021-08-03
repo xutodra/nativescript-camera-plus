@@ -39,6 +39,7 @@
 </p>
 
 ---
+## NOTE: Updated this plugin work with NS7+
 
 ## Installation
 
